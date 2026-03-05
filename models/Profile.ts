@@ -6,6 +6,7 @@ const profileSchema = new mongoose.Schema({
   navbarLogo: { type: String, default: "" },
   aboutText: { type: String, default: "I'm Mehedi Hasan, an Automation Engineer specializing in building workflow systems that connect APIs, CRMs, AI models, and SaaS tools into scalable business automation." },
   profileImage: { type: String, default: "" },
+  email: { type: String, default: "" },
   socialLinks: {
     linkedin: { type: String, default: "" },
     facebook: { type: String, default: "" },
