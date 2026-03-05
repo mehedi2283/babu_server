@@ -16,6 +16,10 @@ const profileSchema = new mongoose.Schema({
     name: { type: String, default: "" },
     imageUrl: { type: String, default: "" }
   }], // Array of tool logos
+  clientLogos: [{
+    name: { type: String, default: "" },
+    imageUrl: { type: String, default: "" }
+  }], // Array of client/company logos
   testimonialTimer: { type: Number, default: 5 }, // Seconds for random switch
 }, { timestamps: true });
 
