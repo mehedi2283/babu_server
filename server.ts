@@ -17,11 +17,13 @@ dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const PORT = process.env.PORT || 3000;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://BabuPortfolio:Mehedi1358549@cluster0.w5am0gy.mongodb.net/portfolio?retryWrites=true&w=majority';
+const PORT = parseInt(process.env.PORT || '3000', 10);
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/portfolio';
 const FRONTEND_URL = process.env.FRONTEND_URL || '*';
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'mehedihasan123456789.mh.mh@gmail.com';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '111111';
+
+// Seed admin only when credentials are explicitly provided via environment variables.
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 const app = express();
 
@@ -31,6 +33,11 @@ app.use(cors({
     credentials: true,
 }));
 app.use(express.json());
+
+// Root route for UptimeRobot and general ping
+app.get('/', (_req, res) => {
+    res.send('Backend API is running');
+});
 
 // Health check
 app.get('/health', (_req, res) => {
@@ -50,16 +57,20 @@ async function startServer() {
         await mongoose.connect(MONGODB_URI);
         console.log('Connected to MongoDB');
 
-        // Seed Admin User
-        const existingUser = await User.findOne({ email: ADMIN_EMAIL });
-        if (!existingUser) {
-            const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 10);
-            const newUser = new User({
-                email: ADMIN_EMAIL,
-                password: hashedPassword,
-            });
-            await newUser.save();
-            console.log('Admin user seeded');
+        // Seed Admin User (only if credentials are provided via environment variables)
+        if (ADMIN_EMAIL && ADMIN_PASSWORD) {
+            const existingUser = await User.findOne({ email: ADMIN_EMAIL });
+            if (!existingUser) {
+                const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 10);
+                const newUser = new User({
+                    email: ADMIN_EMAIL,
+                    password: hashedPassword,
+                });
+                await newUser.save();
+                console.log('Admin user seeded');
+            }
+        } else {
+            console.log('Skipping admin seed: ADMIN_EMAIL and ADMIN_PASSWORD not set.');
         }
     } catch (error) {
         console.error('MongoDB connection error:', error);
