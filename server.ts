@@ -18,7 +18,8 @@ dotenv.config();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/portfolio';
+const isVercel = process.env.VERCEL === '1';
+const MONGODB_URI = process.env.MONGODB_URI || (isVercel ? '' : 'mongodb://127.0.0.1:27017/portfolio');
 const FRONTEND_URL = process.env.FRONTEND_URL || '*';
 
 // Seed admin only when credentials are explicitly provided via environment variables.
@@ -53,6 +54,11 @@ app.use('/api/testimonials', testimonialRoutes);
 
 // Connect to MongoDB then start server
 async function startServer() {
+    if (!MONGODB_URI) {
+        console.error('Missing MONGODB_URI environment variable. Set it in your Vercel project settings.');
+        process.exit(1);
+    }
+
     try {
         await mongoose.connect(MONGODB_URI);
         console.log('Connected to MongoDB');
