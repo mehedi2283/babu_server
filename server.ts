@@ -6,12 +6,12 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
-import authRoutes from './routes/authRoutes.ts';
-import projectRoutes from './routes/projectRoutes.ts';
-import profileRoutes from './routes/profileRoutes.ts';
-import uploadRoutes from './routes/uploadRoutes.ts';
-import testimonialRoutes from './routes/testimonialRoutes.ts';
-import { User } from './models/User.ts';
+import authRoutes from './routes/authRoutes.js';
+import projectRoutes from './routes/projectRoutes.js';
+import profileRoutes from './routes/profileRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
+import testimonialRoutes from './routes/testimonialRoutes.js';
+import { User } from './models/User.js';
 
 dotenv.config();
 
